@@ -30,4 +30,25 @@ export interface CommandDefinition {
   name: string;
   description: string;
   handler: (params: any) => Promise<any>;
+}
+
+export interface ConnectionStatus {
+  status: 'connected' | 'disconnected' | 'error';
+  config: {
+    uri: string;
+    username: string;
+    database?: string;
+  } | null;
+  connectionTime: Date | null;
+  lastError: string | null;
+}
+
+export interface DatabaseInfo {
+  version: string;
+  edition: string;
+  database: string;
+  nodeCount: number;
+  relationshipCount: number;
+  labels: string[];
+  relationshipTypes: string[];
 } 

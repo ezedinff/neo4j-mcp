@@ -5,14 +5,10 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Log for debugging
-echo "Starting MCP wrapper script" > ./mcp-wrapper.log
-echo "Current directory: $DIR" >> ./mcp-wrapper.log
-echo "Bun path: /Users/ezedinfedlu/.bun/bin/bun" >> ./mcp-wrapper.log
-echo "Script path: $DIR/dist/index.js" >> ./mcp-wrapper.log
-
-# find bun path
-BUN_PATH="/Users/ezedinfedlu/.bun/bin/bun"
-echo "Bun path: $BUN_PATH"
+echo "Starting MCP wrapper script" > /tmp/mcp-wrapper.log
+echo "Current directory: $DIR" >> /tmp/mcp-wrapper.log
+echo "Bun path: /Users/ezedinfedlu/.bun/bin/bun" >> /tmp/mcp-wrapper.log
+echo "Script path: $DIR/dist/index.js" >> /tmp/mcp-wrapper.log
 
 # Run the MCP server with Bun
-exec "$BUN_PATH" "$DIR/dist/index.js" 2>> ./mcp-wrapper.log 
+exec "/Users/ezedinfedlu/.bun/bin/bun" "$DIR/dist/index.js" 2>> /tmp/mcp-wrapper.log 

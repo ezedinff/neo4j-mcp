@@ -9,11 +9,40 @@ A Cursor MCP (Model Context Protocol) server that enables seamless interaction w
 - Transform Neo4j-specific data types to standard JavaScript objects
 - Uses the official MCP SDK with stdio transport for seamless integration with Cursor
 - Support for environment variables for secure credential management
+- Retrieve detailed database information and metrics
+- Monitor connection status and diagnostics
 
 ## Prerequisites
 
 - [Bun](https://bun.sh/) (v1.0.0 or higher)
 - [Neo4j](https://neo4j.com/) database (local or remote)
+
+## Running Neo4j with Docker Compose
+
+This project includes a Docker Compose configuration to easily run Neo4j in a container:
+
+1. Make sure you have [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/) installed.
+
+2. Start Neo4j using Docker Compose:
+   ```bash
+   docker-compose up -d
+   ```
+
+3. Access the Neo4j Browser at [http://localhost:7474](http://localhost:7474)
+   - Default username: `neo4j`
+   - Default password: `your_password` (as specified in the docker-compose.yml)
+
+4. To stop Neo4j:
+   ```bash
+   docker-compose down
+   ```
+
+5. To stop Neo4j and remove all data:
+   ```bash
+   docker-compose down -v
+   ```
+
+> **Note**: The default password in docker-compose.yml is set to `your_password`. For production use, change this to a secure password and update your `.env` file accordingly.
 
 ## Installation
 
@@ -45,7 +74,11 @@ A Cursor MCP (Model Context Protocol) server that enables seamless interaction w
 The server uses stdio transport for communication with Cursor, so it should be started by Cursor itself. However, you can test it manually:
 
 ```bash
+# Run directly
 bun run index.ts
+
+# Run with logging using the provided script
+./run-mcp-server.sh
 ```
 
 ### Available Tools
@@ -76,7 +109,28 @@ Parameters:
 - `query`: Cypher query to execute
 - `params`: (Optional) Query parameters
 
-#### 4. Disconnect from Neo4j
+#### 4. Get Database Information
+
+Retrieves detailed information about the connected Neo4j database, including:
+- Neo4j version and edition
+- Database name
+- Node and relationship counts
+- Available labels
+- Relationship types
+
+No parameters required.
+
+#### 5. Get Connection Status
+
+Retrieves the current connection status, including:
+- Connection state (connected/disconnected)
+- Connection details (URI, database)
+- Connection time
+- Last error (if any)
+
+No parameters required.
+
+#### 6. Disconnect from Neo4j
 
 Disconnects from the Neo4j database.
 
@@ -110,9 +164,32 @@ This MCP server is designed to be used with Cursor's MCP integration. Cursor wil
 
 ### Building for Production
 
+To build the server for production:
+
 ```bash
+# Build the server
 bun build index.ts --outdir ./dist
+
+# Make the output file executable
+chmod +x ./dist/index.js
 ```
+
+The build process bundles all dependencies into a single JavaScript file, making it easy to distribute and run the server without installing dependencies.
+
+### Running the Server
+
+You can run the server using the provided shell script:
+
+```bash
+./run-mcp-server.sh
+```
+
+This script:
+- Sets the working directory to the script's location
+- Creates a logs directory if it doesn't exist
+- Runs the server using Bun and logs output to `logs/mcp-server.log`
+
+> **Note**: The script requires Bun to be installed and available in your PATH.
 
 ## License
 

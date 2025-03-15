@@ -1,8 +1,13 @@
 {
-  "name": "mcp-commands",
+  "name": "neo4j-mcp-server",
   "module": "index.ts",
   "type": "module",
   "private": true,
+  "scripts": {
+    "start": "bun run index.ts",
+    "dev": "bun run --watch index.ts",
+    "build": "bun build index.ts --outfile dist/index.js"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },

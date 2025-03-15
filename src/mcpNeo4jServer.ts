@@ -106,12 +106,21 @@ server.tool(
     const result = await neo4jService.executeQuery(queryRequest);
     
     if (isErrorResponse(result)) {
+      console.error('Error response from Neo4j service:', result);
       return {
         content: [
           {
-            type: "text",
+            type: "text" as const,
             text: `Error executing query: ${result.error}`,
           },
+          {
+            type: "text" as const,
+            text: `Error code: ${result.code || 'N/A'}`,
+          },
+          ...(result.stack ? [{
+            type: "text" as const,
+            text: `Stack trace: ${result.stack}`,
+          }] : []),
         ],
       };
     }
@@ -137,6 +146,107 @@ server.tool(
           type: "text",
           text: `Query time: ${result.summary.resultAvailableAfter}ms`,
         },
+      ],
+    };
+  }
+);
+
+// Register Neo4j GetDatabaseInfo tool
+server.tool(
+  "GetDatabaseInfo",
+  "Retrieve information about the connected Neo4j database",
+  {},
+  async () => {
+    const result = await neo4jService.getDatabaseInfo();
+    
+    if (isErrorResponse(result)) {
+      return {
+        content: [
+          {
+            type: "text" as const,
+            text: `Error retrieving database info: ${result.error}`,
+          },
+          ...(result.code ? [{
+            type: "text" as const,
+            text: `Error code: ${result.code}`,
+          }] : []),
+          ...(result.stack ? [{
+            type: "text" as const,
+            text: `Stack trace: ${result.stack}`,
+          }] : []),
+        ],
+      };
+    }
+    
+    return {
+      content: [
+        {
+          type: "text" as const,
+          text: `Neo4j Database Information:`,
+        },
+        {
+          type: "text" as const,
+          text: `Version: ${result.version} (${result.edition})`,
+        },
+        {
+          type: "text" as const,
+          text: `Database: ${result.database}`,
+        },
+        {
+          type: "text" as const,
+          text: `Node count: ${result.nodeCount}`,
+        },
+        {
+          type: "text" as const,
+          text: `Relationship count: ${result.relationshipCount}`,
+        },
+        {
+          type: "text" as const,
+          text: `Available labels: ${result.labels.join(', ')}`,
+        },
+        {
+          type: "text" as const,
+          text: `Relationship types: ${result.relationshipTypes.join(', ')}`,
+        },
+      ],
+    };
+  }
+);
+
+// Register Neo4j GetConnectionStatus tool
+server.tool(
+  "GetConnectionStatus",
+  "Get the current Neo4j connection status",
+  {},
+  async () => {
+    const status = neo4jService.getStatus();
+    
+    return {
+      content: [
+        {
+          type: "text" as const,
+          text: `Connection Status: ${status.status === 'connected' ? 'Connected' : 'Disconnected'}`,
+        },
+        ...(status.status === 'connected' ? [
+          {
+            type: "text" as const,
+            text: `Connected to: ${status.config?.uri || 'Unknown'}`,
+          },
+          {
+            type: "text" as const,
+            text: `Database: ${status.config?.database || 'default'}`,
+          },
+          {
+            type: "text" as const,
+            text: `Connected since: ${status.connectionTime ? new Date(status.connectionTime).toLocaleString() : 'Unknown'}`,
+          }
+        ] : []),
+        ...(status.lastError ? [
+          {
+            type: "text" as const,
+            text: `Last error: ${status.lastError}`,
+          }
+        ] : []),
       ],
     };
   }
