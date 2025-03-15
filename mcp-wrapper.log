@@ -1,0 +1,7 @@
+Starting MCP wrapper script
+Current directory: /Users/ezedinfedlu/mcp-commands
+Bun path: /Users/ezedinfedlu/.bun/bin/bun
+Script path: /Users/ezedinfedlu/mcp-commands/dist/index.js
+[0m[31mStarting Neo4j MCP Server...[0m
+[0m[31mConnecting to transport...[0m
+[0m[31mNeo4j MCP Server running on stdio[0m
